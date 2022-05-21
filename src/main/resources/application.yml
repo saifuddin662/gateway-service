@@ -1,0 +1,46 @@
+server:
+  port: 9191
+
+spring:
+  application:
+    name: API-GATEWAY
+  config:
+    import: optional:configserver:http://localhost:8083
+  cloud:
+    gateway:
+      routes:
+        - id: USER-SERVICE
+          uri: lb://USER-SERVICE
+          predicates:
+            - Path=/v1/user/**
+#          filters:
+#            - name: CircuitBreaker
+#              args:
+#                name: USER-SERVICE
+#                fallbackuri: forward:/userServiceFallBack
+        - id: DEPARTMENT-SERVICE
+          uri: lb://DEPARTMENT-SERVICE
+          predicates:
+            - Path=/v1/department/**
+#          filters:
+#            - name: CircuitBreaker
+#              args:
+#                name: USER-SERVICE
+#                fallbackuri: forward:/departmentServiceFallBack
+
+#resilience4j.circuitbreaker:
+#  instances:
+#    add:
+#      registerHealthIndicator: true
+#      ringBufferSizeInClosedState: 5
+#      ringBufferSizeInHalfOpenState: 3
+#      waitDurationInOpenState: 10s
+#      failureRateThreshold: 50
+#      recordExceptions:
+#        - org.springframework.web.client.HttpServerErrorException
+#        - java.io.IOException
+#        - java.util.concurrent.TimeoutException
+#        - org.springframework.web.client.ResourceAccessException
+#        - org.springframework.web.client.HttpClientErrorException
+#      ignoreExceptions:
+
